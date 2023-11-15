@@ -10,7 +10,7 @@
     python -m venv venv
     venv\Scripts\activate
 
-2. Виконайте міграцію та запустіть сервер.
+2. Виконайте міграцію
     
     ```
    python manage.py makemigration
