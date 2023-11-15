@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Реєстрація</h1>
+<form method="POST">
+    {{ form1 }}<br>
+    {{ form2 }}
+    {% csrf_token %}
+    <div>
+        <button type="submit">Зареєструватися</button>
+    </div>
+
+</form>
+
+
+</body>
+</html>

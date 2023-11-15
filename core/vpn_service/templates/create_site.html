@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<h1>Створення сайту</h1>
+
+<form action="" method="POST">
+    {% for field in form %}
+        <div class="field">{{ field.label_tag }}</div>
+        <div>{{ field }}</div>
+    {% endfor %}
+    {% csrf_token %}
+    <button type="submit">Створити</button>
+</form>
+
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<h1>Профіль користувача</h1>
+
+<p>Ім'я користувача {{ user.username }}</p>
+<p>Дата народження {{ user.userprofile.data_of_birth }}</p>
+<p>Номер телефона {{ user.userprofile.phone_number }}</p>
+<div class="profile">
+    <a href="{% url 'update_profile' %}">Змінити дані</a><br>
+    <a href="{% url 'create_site' %}">Створити сайт</a>
+</div>
+
+<h1>Статистика</h1>
+
+{% for site in usersite %}
+    <ul>
+        <h2>{{ site.user_site_name }}</h2>
+        <li>Перейти на сайт через VPN: <a href="{% url 'proxy' site.user_site_name site.original_site %}">{{ site.original_site }}</a></li>
+        <li>Перейти на сайт без VPN: <a href="{{ site.original_site }}">{{ site.original_site }}</a></li>
+
+        {% with stat=site.sitestatistic_set.first %}
+            {% if stat %}
+                <li>Кількість переходів: {{ stat.clicks_count }}</li>
+                <li>Об'єм відправлених даних: {{ stat.data_sent }}</li>
+                <li>Об'єм відправлених завантажених: {{ stat.data_received }}</li>
+            {% else %}
+                <li><p>Немає статистики</p></li>
+            {% endif %}
+        {% endwith %}
+    </ul>
+{% endfor %}
+
+
+
+
+
+</body>
+</html>
