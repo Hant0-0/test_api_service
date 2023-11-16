@@ -5,7 +5,7 @@
 
 1. Клонуйте проект і створюйте віртуальне середовище.
     ````
-    git clone https://github.com/Hant0-0/test_api_service.git
+    git clone https://github.com/Hant0-0/test_vpn_service
     cd vpn_service
     python -m venv venv
     venv\Scripts\activate
