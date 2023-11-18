@@ -4,22 +4,32 @@
 # Встановлення та початок роботи
 
 1. Клонуйте проект і створюйте віртуальне середовище.
-    ````
+    ```
     git clone https://github.com/Hant0-0/test_vpn_service
     cd vpn_service
     python -m venv venv
     venv\Scripts\activate
+   ```
 
 2. Виконайте міграцію
     
     ```
    python manage.py makemigration
    python manage.py migrate
+   ```
         
 # Запустіть з Docker
 Docker має бути встановлено та запущено
 
 ```
 docker-compose up --build
+```
+
+# Тестування
+Команда для запуску тестів
+```
+docker-compose run --rm web-app sh -c "pytest"
+```
+
 
     
