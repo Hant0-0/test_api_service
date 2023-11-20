@@ -31,12 +31,15 @@ def register_user(request):
 
 def sign_in(request):
     if request.method == 'GET':
-        form = AuthenticationForm()
-        return render(request, 'sign_in.html', {'form': form})
+        return render(request, 'sign_in.html', {'form': AuthenticationForm()})
     else:
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
-        login(request, user)
-        return redirect('user_profile')
+        try:
+            user = authenticate(username=request.POST['username'], password=request.POST['password'])
+            login(request, user)
+            return redirect('user_profile')
+        except AttributeError:
+            return render(request, 'sign_in.html', {'form': AuthenticationForm(), 'error': 'Password or username '
+                                                                                           'is not corrected'})
 
 
 def user_profile(request):

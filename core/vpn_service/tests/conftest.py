@@ -3,11 +3,17 @@ from django.contrib.auth.models import User
 from django.test import RequestFactory
 
 from vpn_service.models import UserProfile, UserSite, SiteStatistic
+from django.test import Client
 
 
 @pytest.fixture
 def request_factory():
     return RequestFactory()
+
+
+@pytest.fixture()
+def client():
+    return Client()
 
 
 @pytest.fixture
