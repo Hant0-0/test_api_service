@@ -1,9 +1,12 @@
+from urllib.parse import urljoin
+
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from vpn_service.form import MyUserCreationForm, AddUserProfileForm, CreateSiteForm
 from vpn_service.models import UserProfile, UserSite, SiteStatistic
@@ -76,13 +79,13 @@ def proxy_view(request, user_site_name, routes_on_original_site):
     original_url = routes_on_original_site
     response = requests.get(original_url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    modify_content = replace_links(soup.prettify(), user_site_name)
+    modify_content = replace_links(soup.prettify(), user_site_name, original_url)
 
-    site_name = UserSite.objects.get(original_site=routes_on_original_site)
+    site_name = UserSite.objects.get(user=request.user, original_site=routes_on_original_site)
     site_statistic, created = SiteStatistic.objects.get_or_create(user=request.user, site_name=site_name)
 
-    sent_data = len(response.request.body) if response.request.body else 0
-    received_data = len(response.content) if response.content else 0
+    sent_data = len(response.request.body) + len(request.META) if response.request.body else 0
+    received_data = len(HttpResponse(modify_content).content) if response.content else 0
 
     site_statistic.clicks_count += 1
     site_statistic.data_sent += sent_data
@@ -92,12 +95,15 @@ def proxy_view(request, user_site_name, routes_on_original_site):
     return render(request, 'vpn_page.html', {'content': modify_content})
 
 
-def replace_links(parsed_content, user_site_name):
+def replace_links(parsed_content, user_site_name, original_url):
     soup = BeautifulSoup(parsed_content, 'html.parser')
-    for a_tag in soup.find_all('a', href=True):
-        original_href = a_tag['href']
 
-        new_href = f"{user_site_name}/{original_href}"
-        a_tag['href'] = new_href
+    for a_tag in soup.find_all('a', href=True, src=True):
+
+        if 'href' in a_tag.attrs and not a_tag['href'].startswith(('http:', 'https:')):
+            a_tag['href'] = urljoin(user_site_name, original_url, a_tag["href"])
+
+        if 'src' in a_tag.attrs and not a_tag['src'].startswith(('http:', 'https:')):
+            a_tag['src'] = urljoin(user_site_name, original_url, a_tag["src"])
 
     return str(soup)
